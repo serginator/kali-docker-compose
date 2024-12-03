@@ -1,0 +1,33 @@
+services:
+  kali:
+    build: .
+    container_name: kali
+    user: root
+    cap_add:
+      - CAP_NET_RAW
+      - CAP_NET_ADMIN
+      - CAP_NET_BIND_SERVICE
+    ports:
+      - "5901:5901"
+      - "6901:6901"
+    volumes:
+      - ./data:/root/data
+    environment:
+      - DISPLAY=:1
+      - VNC_PW=password
+      - USER=root
+    command: >
+      /bin/bash -c "
+      su -c 'vncserver :1 -geometry 1600x900 -depth 24' root &&
+      websockify --web=/usr/share/novnc/ --wrap-mode=ignore 6901 localhost:5901
+      "
+    networks:
+      pentest-net:
+        ipv4_address: 192.168.10.10
+
+networks:
+  pentest-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
