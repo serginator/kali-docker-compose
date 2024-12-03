@@ -18,6 +18,7 @@ services:
       - USER=root
     command: >
       /bin/bash -c "
+      service postgresql start &&
       su -c 'vncserver :1 -geometry 1600x900 -depth 24' root &&
       websockify --web=/usr/share/novnc/ --wrap-mode=ignore 6901 localhost:5901
       "
